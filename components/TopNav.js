@@ -8,10 +8,10 @@ const TopNav = () => {
 
     const menu = (
         <Menu>
-          <Menu.Item>
+          <Menu.Item key='login'>
            <Link href='/login'><a className="d-flex justify-content-center"><b>Login</b></a></Link>
           </Menu.Item>
-          <Menu.Item>
+          <Menu.Item key='register'>
            <Link href='/register'><a className="d-flex justify-content-center"><b>Register</b></a></Link>
           </Menu.Item>
         </Menu>
@@ -36,7 +36,7 @@ const TopNav = () => {
       </Item>
 
       <AutoComplete style={{ width: 600 }} className=" m-auto ">
-        <Input.Search size="medium" placeholder="input here" />
+        <Input.Search size="medium" placeholder="Search here" />
       </AutoComplete>
 
       <Dropdown overlay={menu} placement="bottomCenter">
