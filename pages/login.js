@@ -2,21 +2,26 @@ import React, {useState, useContext} from "react";
 import axios from 'axios'
 import { toast } from "react-toastify";
 import { Context } from "../context";
+import {useRouter} from 'next/router'
 
 const login = () => {
 
     const [values, setValues] = useState({})
+
+    const router = useRouter()
 
   const {state, dispatch} = useContext(Context)
 
     const handleSubmit =async (e) => {
         e.preventDefault()
   try {
-    const user = await axios.post(`${process.env.NEXT_PUBLIC_API}/login`, values)
-    dispatch({type:"LOGIN", payload: user})
+    const {data} = await axios.post(`/api/login`, values)
+    dispatch({type:"LOGIN", payload: data})
+    window.localStorage.setItem('user', JSON.stringify(data))
     toast.success('Login successfull')
+    router.push('/')
   } catch (error) {
-      toast.error(error.response.data)
+      toast.error('Login failed')
       console.log('error',error);
   }
   

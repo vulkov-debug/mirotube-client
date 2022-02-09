@@ -1,7 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/antd.css";
 import TopNav from "../components/TopNav";
-import LeftBar from "../components/LeftBar";
 import "../public/css/styles.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -13,14 +12,8 @@ function MyApp({ Component, pageProps }) {
       <div className="container-fluid p-0">
         <ToastContainer />
         <TopNav />
-        <div className="row">
-          {/* <div className="col-md-2 ">
-          <LeftBar />
-        </div> */}
-          <div className="col">
-            <Component {...pageProps} />
-          </div>
-        </div>
+
+        <Component {...pageProps} />
       </div>
     </Provider>
   );

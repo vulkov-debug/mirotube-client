@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import {useRouter} from 'next/router'
 
 const register = () => {
   const [values, setValues] = useState({});
+ 
+  const router = useRouter()
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -13,6 +16,7 @@ const register = () => {
         values
       );
       toast.success('Registration successfull!')
+      router.push('/login')
    } catch (error) {
        console.log(error.response.data);
        toast.error(error.response.data)
@@ -29,6 +33,7 @@ const register = () => {
           <div className="col-md-4 offset-md-4 p-5 ">
             <form className="login-form" onSubmit={handleSubmit}>
             <input
+               required
                 type="text"
                 placeholder="Name"
                 onChange={(e) =>
@@ -38,6 +43,7 @@ const register = () => {
                 className="form-control m-3"
               />
               <input
+              required
                 type="email"
                 placeholder="Email"
                 onChange={(e) =>
@@ -47,6 +53,7 @@ const register = () => {
                 className="form-control m-3"
               />
               <input
+              required
                 type="password"
                 placeholder="Password"
                 onChange={(e) =>
