@@ -1,10 +1,13 @@
 import React from 'react';
 import {Menu} from 'antd'
-import {PieChartOutlined, DesktopOutlined, ContainerOutlined, MailOutlined, AppstoreOutlined } from '@ant-design/icons'
+import {PieChartOutlined, DesktopOutlined, MailOutlined, AppstoreOutlined, PlusOutlined, UnorderedListOutlined, UploadOutlined, PlayCircleOutlined } from '@ant-design/icons'
+import {useRouter} from 'next/router'
 
 const {SubMenu} = Menu
 
 const LeftBar = () => {
+
+  const router = useRouter()
   return <>
   <Menu
           defaultSelectedKeys={['1']}
@@ -13,17 +16,14 @@ const LeftBar = () => {
           theme="dark"
         //   inlineCollapsed={this.state.collapsed}
         >
-          <Menu.Item key="1" icon={<PieChartOutlined />}>
-            Option 1
+          <Menu.Item key="1" icon={<PlayCircleOutlined />} onClick={()=> router.push('/my-videos')}>
+            My videos
           </Menu.Item>
-          <Menu.Item key="2" icon={<DesktopOutlined />}>
-            Option 2
+          <Menu.Item key="2" icon={<UploadOutlined />} onClick={()=> router.push('/upload-video')}>
+            Upload video
           </Menu.Item>
-          <Menu.Item key="3" icon={<ContainerOutlined />}>
-            Option 3
-          </Menu.Item>
-          <SubMenu key="sub1" icon={<MailOutlined />} title="Navigation One">
-            <Menu.Item key="5">Option 5</Menu.Item>
+          <SubMenu key="sub1" icon={<UnorderedListOutlined />} title="My playlists">
+            <Menu.Item key="5" icon={<PlusOutlined />}>Add new Playlist</Menu.Item>
             <Menu.Item key="6">Option 6</Menu.Item>
             <Menu.Item key="7">Option 7</Menu.Item>
             <Menu.Item key="8">Option 8</Menu.Item>
