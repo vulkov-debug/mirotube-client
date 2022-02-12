@@ -70,6 +70,7 @@ const VideoUploadForm = ({visible, setVisible }) => {
             Upload
             <input
               type="file"
+              accept="video/*"
               hidden
               onChange={handleVideoUpload}
               disabled={loading}
