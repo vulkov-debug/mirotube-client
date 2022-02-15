@@ -3,7 +3,9 @@ import { useRouter } from "next/router";
 import ReactPlayer from "react-player";
 import axios from "axios";
 import UserRoute from "../../components/routes/UserRoute";
-
+import SingleVideoCard from "../../components/cards/SingleVideoCard";
+import {Card} from 'antd'
+const {Meta} = Card
 const SingleVideoView = () => {
   const [video, setVideo] = useState({});
 
@@ -27,18 +29,110 @@ const SingleVideoView = () => {
     <UserRoute>
       {/* {JSON.stringify(video)} */}
       <div className="row">
-        <div className="col-md-10">
+        <div className="col-md-9">
           {video && video.video && (
             <ReactPlayer
               url={video.video.Location}
               controls
-              style={{ marginTop: "10px", marginLeft: "10px" }}
-              width={800}
-              height={500}
+              style={{ top: 0, left: 0, position: 'absolute' }}
+              width='100%'
+              height='auto'
+              playing
             />
           )}
         </div>
-        <div className="col-md-2"></div>
+        <div className="col">
+        {video && video.video && <><Card
+    // onClick={()=> router.push(`/view/${v._id}`)} 
+      // className="col-md-2 col-sm-5 m-3 p-0"
+      hoverable
+      cover={
+        <>
+          <ReactPlayer
+            url={video.video.Location}
+            alt="video"
+            width="100%"
+            height="100%"
+            cover
+          />
+        </>
+      }
+    >
+      <Meta title='test' description='test'  />
+    </Card>
+    <Card
+    // onClick={()=> router.push(`/view/${v._id}`)} 
+      // className="col-md-2 col-sm-5 m-3 p-0"
+      hoverable
+      cover={
+        <>
+          <ReactPlayer
+            url={video.video.Location}
+            alt="video"
+            width="100%"
+            height="100%"
+            cover
+          />
+        </>
+      }
+    >
+      <Meta title='test' description='test'  />
+    </Card>
+    <Card
+    // onClick={()=> router.push(`/view/${v._id}`)} 
+      // className="col-md-2 col-sm-5 m-3 p-0"
+      hoverable
+      cover={
+        <>
+          <ReactPlayer
+            url={video.video.Location}
+            alt="video"
+            width="100%"
+            height="100%"
+            cover
+          />
+        </>
+      }
+    >
+      <Meta title='test' description='test'  />
+    </Card>
+    <Card
+    // onClick={()=> router.push(`/view/${v._id}`)} 
+      // className="col-md-2 col-sm-5 m-3 p-0"
+      hoverable
+      cover={
+        <>
+          <ReactPlayer
+            url={video.video.Location}
+            alt="video"
+            width="100%"
+            height="100%"
+            cover
+          />
+        </>
+      }
+    >
+      <Meta title='test' description='test'  />
+    </Card>
+    <Card
+    // onClick={()=> router.push(`/view/${v._id}`)} 
+      // className="col-md-2 col-sm-5 m-3 p-0"
+      hoverable
+      cover={
+        <>
+          <ReactPlayer
+            url={video.video.Location}
+            alt="video"
+            width="100%"
+            height="100%"
+            cover
+          />
+        </>
+      }
+    >
+      <Meta title='test' description='test'  />
+    </Card></>}
+        </div>
       </div>
     </UserRoute>
   );

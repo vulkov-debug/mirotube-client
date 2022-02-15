@@ -4,6 +4,8 @@ import Link from "next/link";
 import { Context } from "../context";
 import { toast } from "react-toastify";
 import axios from "axios";
+import Typewriter from 'typewriter-effect';
+
 
 const { Item } = Menu;
 
@@ -47,11 +49,9 @@ const TopNav = () => {
     <div className="container-fluid p-0">
 
     <Menu mode="horizontal inline" theme="dark" className="d-flex">
-      <Item className="mr-2">
-        <Link href="/">
-          <a>MiroTube</a>
-        </Link>
-      </Item>
+      <div className="ml-2 mr-2" >
+    MiroTube
+      </div>
       <Item className="mr-2">
         <Link href="/popular">
           <a> Popular</a>

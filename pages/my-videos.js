@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import UserRoute from "../components/routes/UserRoute";
-import { Card, Tooltip, Modal } from "antd";
+import { Card, Modal } from "antd";
 import axios from "axios";
 import ReactPlayer from "react-player";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
+import SingleEditVideoCard from "../components/cards/SingleEditVideoCard";
 
 const { confirm } = Modal;
 const { Meta } = Card;
@@ -54,35 +55,7 @@ const myVideos = () => {
     <UserRoute>
       <div className="row">
         {videos.map((v) => (
-          <Card
-          onClick={()=> router.push(`/view/${v._id}`)} 
-            className="col-md-2 col-sm-5 m-3 p-0"
-            hoverable
-            cover={
-              <>
-                <ReactPlayer
-                  url={v && v.video.Location ? v.video.Location : "/course.png"}
-                  alt="video"
-                  width="100%"
-                  height="100%"
-                  cover
-                />
-              </>
-            }
-            actions={[
-              <Tooltip title="Edit video">
-                <EditOutlined className="text-warning" />
-              </Tooltip>,
-              <Tooltip title="Remove video">
-                <CloseCircleOutlined
-                  onClick={() => handleVideoRemove(v)}
-                  className="text-danger"
-                />
-              </Tooltip>,
-            ]}
-          >
-            <Meta title={v.title} description={v.description ? v.description : v.title}  />
-          </Card>
+          <SingleEditVideoCard v={v}/>
         ))}
       </div>
     </UserRoute>

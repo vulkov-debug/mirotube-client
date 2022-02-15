@@ -8,13 +8,13 @@ const uploadVideo = () => {
   const [visible, setVisible] = useState(false)
   return (
     <UserRoute>
-      <div className="container-fluid p-5">
-        <div className="row col-md-2 offset-md-5">
+       <div className="container-fluid p-2">
+        <div className="d-flex justify-content-center">
           <PlusCircleOutlined className="display-1" onClick={()=>setVisible(true)} />
         </div>
-        <div className="row col-md-2 offset-md-5 pt-3">
-          <span>Add new video</span>
-        </div>
+        <div className="d-flex justify-content-center pt-2">
+          <span><b>Add new video </b></span>
+          </div>
       </div>
       <VideoUploadForm visible={visible} setVisible={setVisible}/>
     </UserRoute>
