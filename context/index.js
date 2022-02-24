@@ -12,8 +12,12 @@ const rootReducer = (state, action) => {
     switch(action.type) {
         case "LOGIN":
             return {...state, user: action.payload}
-            case "LOGOUT":
+        case "LOGOUT":
             return {...state, user: null}
+        case "SET-PLAYLIST": 
+            return {...state, playlist: action.payload}
+        case "REMOVE-PLAYLIST": 
+            return {...state, playlist: null}    
         default: return state
     }
 }

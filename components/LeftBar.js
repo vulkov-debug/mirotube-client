@@ -24,15 +24,17 @@ const LeftBar = () => {
   const [playlists, setPlaylists] = useState([]);
   const [ok, setOk] = useState(true);
 
+  const [openKeys, setOpenKeys] = useState(["sub1"]);
+
   const router = useRouter();
 
   useEffect(() => {
     process.browser && setCurrent(window.location.pathname);
-  }, [process.browser && window.location.pathname]);
+  }, [process.browser && window.location.pathname, openKeys]);
 
   const addPlaylist = async () => {
     setVisible(false);
-    const newPlaylist = await axios.post("/api/add-playlist", {
+    await axios.post("/api/add-playlist", {
       name: playlist,
     });
     toast.success(`${playlist} addded successfully!`);
@@ -42,20 +44,37 @@ const LeftBar = () => {
 
   useEffect(() => {
     fetchPlaylists();
+    // if (localStorage.getItem("keys")) {
+    //   const savedKeys = localStorage.getItem("keys");
+    //   setOpenKeys(savedKeys.split(','))
+    //   console.log('openKeys UseEffect', savedKeys.split(','))
+      
+    // }
   }, []);
 
   const fetchPlaylists = async () => {
     const { data } = await axios.get("/api/get-playlists");
     setPlaylists(data);
     setOk(!ok);
-    console.log(playlists);
+    console.log("playlists", playlists);
+  };
+
+  const handleOpenKeys = (key) => {
+    const newOpenKeys = openKeys;
+    if (newOpenKeys.indexOf(key) == -1) {
+      newOpenKeys.push(key);
+    }
+    setOpenKeys(newOpenKeys);
+    console.log("openKeys", openKeys);
+    localStorage.setItem("keys", openKeys);
+    setOk(!ok)
   };
 
   return (
     <>
       <Menu
         selectedKeys={[current]}
-        defaultOpenKeys={["sub1"]}
+        defaultOpenKeys={openKeys}
         mode="inline"
         theme="dark"
       >
@@ -66,24 +85,36 @@ const LeftBar = () => {
         >
           Home
         </Menu.Item>
-        <Menu.Item
-          key="/my-videos"
-          icon={<PlayCircleOutlined />}
-          onClick={() => router.push("/my-videos")}
-        >
-          My videos
-        </Menu.Item>
-        <Menu.Item
-          key="/upload-video"
-          icon={<UploadOutlined />}
-          onClick={() => router.push("/upload-video")}
-        >
-          Upload video
-        </Menu.Item>
         <SubMenu
           key="sub1"
           icon={<UnorderedListOutlined />}
           title="My playlists"
+        >
+          <Menu.Item
+            key="/my-videos"
+            icon={<PlayCircleOutlined />}
+            onClick={() => router.push("/my-videos")}
+          >
+            My videos
+          </Menu.Item>
+          {playlists.length > 0 ? (
+            playlists.map((playlist) => (
+              <Menu.Item
+                key={`/playlist/listen/${playlist._id}`}
+                onClick={() => router.push(`/playlist/listen/${playlist._id}`)}
+              >
+                {playlist.name}
+              </Menu.Item>
+            ))
+          ) : (
+            <LoadingOutlined spin className="d-flex justify-content-center" />
+          )}
+        </SubMenu>
+       <SubMenu
+          onClick={(e) => setOpenKeys(e.key)}
+          key="sub2"
+          icon={<UnorderedListOutlined />}
+          title="Edit playlists"
         >
           <Menu.Item
             key="4"
@@ -94,13 +125,18 @@ const LeftBar = () => {
           </Menu.Item>
           {playlists.length > 0 ? (
             playlists.map((playlist) => (
-              <Menu.Item key={`/playlist/${playlist._id}`} onClick={()=>router.push(`/playlist/${playlist._id}`)}>{playlist.name}</Menu.Item>
+              <Menu.Item
+                key={`/playlist/${playlist._id}`}
+                onClick={() => router.push(`/playlist/${playlist._id}`)}
+              >
+                {playlist.name}
+              </Menu.Item>
             ))
           ) : (
             <LoadingOutlined spin className="d-flex justify-content-center" />
           )}
         </SubMenu>
-        <SubMenu key="sub2" icon={<AppstoreOutlined />} title="Navigation Two">
+        <SubMenu key="sub5" icon={<AppstoreOutlined />} title="Navigation Two">
           <Menu.Item key="8">Option 9</Menu.Item>
           <Menu.Item key="9">Option 10</Menu.Item>
           <SubMenu key="sub3" title="Submenu">

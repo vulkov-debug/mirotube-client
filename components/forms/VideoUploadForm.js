@@ -5,7 +5,7 @@ import axios from "axios";
 import { LoadingOutlined } from "@ant-design/icons";
 import {useRouter} from 'next/router' 
 
-const VideoUploadForm = ({visible, setVisible }) => {
+const VideoUploadForm = ({visible, setVisible, setOk }) => {
   const [video, setVideo] = useState({});
   const [title, setTitle] = useState ('')
   const [description, setDescription] = useState('')
@@ -27,6 +27,7 @@ const VideoUploadForm = ({visible, setVisible }) => {
   const videoSave = async () => {
     await axios.post('/api/video-save', {video, title, description})
     setVisible(false)
+    setOk(prevState=> !prevState)
     router.push('/my-videos')
   };
 

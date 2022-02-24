@@ -5,6 +5,7 @@ import axios from "axios";
 import { PlusCircleOutlined } from "@ant-design/icons";
 import AddVideoToPlaylist from "../../components/forms/AddVideoToPlaylist";
 import SinglePlaylistVideoCard from "../../components/cards/SinglePlaylistVideoCard";
+import { toast } from "react-toastify";
 
 const userPlaylist = () => {
   const router = useRouter();
@@ -20,8 +21,12 @@ const userPlaylist = () => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [objOfAllIdsAndNames, setObjOfAllIdsAndNames] = useState({});
 
+  const [videosInModal, setVideosInModal] = useState([]);
+
   let arrOfIdsAndNames = [];
   let arrOfNames = [];
+
+  const arrOfSelected = [];
 
   const fetchUserVideos = async () => {
     const { data } = await axios.get("/api/user-videos");
@@ -47,8 +52,6 @@ const userPlaylist = () => {
   }, [id]);
 
   const handleSubmit = async () => {
-    console.log("objOfAllIdsAndNames", objOfAllIdsAndNames);
-    const arrOfSelected = [];
     for (let i = 0; i < Object.keys(objOfAllIdsAndNames).length; i++) {
       let [key, value] = Object.entries(objOfAllIdsAndNames)[i];
       if (selectedItems.includes(key)) {
@@ -59,14 +62,48 @@ const userPlaylist = () => {
       arrOfSelected,
       id,
     });
+    fetchPlaylistVideos();
+    setVideosInModal([])
   };
 
   const fetchPlaylistVideos = async () => {
     const { data } = await axios.post("/api/get-playlist-videos", {
       playlist: id,
     });
+    console.log("playlist videos", data);
     setPlaylistVideos(data);
   };
+
+  const updatePlaylist = async () => {
+    const { data } = await axios.post(`/api/update-playlist`, {
+      id,
+      playlist: playlistVideos,
+    });
+    if (data.ok) {
+      toast.success(`Successfully edited playlist`);
+    }
+  };
+
+  const handleChangeItemsInPlaylist = async (v) => {
+   console.log('v', v)
+   setVideosInModal([])
+   setSelectedItems(v)
+
+    const arrOfModalVideos = []
+
+   for (let i = 0; i < Object.keys(objOfAllIdsAndNames).length; i++) {
+     let [key, value] = Object.entries(objOfAllIdsAndNames)[i];
+     if (v.includes(key)) {
+       arrOfSelected.push(value);
+       const { data } = await axios.get(`/api/single-video/${value}`);
+       console.log('data', data)
+       arrOfModalVideos.push(data)
+ }}
+   console.log('arrOfSelected', arrOfSelected)
+   console.log('arrOfModalVideos', arrOfModalVideos)
+   setVideosInModal(arrOfModalVideos)
+      }
+
   return (
     <UserRoute>
       <div className="container-fluid p-2">
@@ -89,16 +126,17 @@ const userPlaylist = () => {
         handleSubmit={handleSubmit}
         selectedItems={selectedItems}
         setSelectedItems={setSelectedItems}
+        handleChangeItemsInPlaylist={handleChangeItemsInPlaylist}
+        videosInModal={videosInModal}
       />
       <div className="row">
-        {!loading ? (
-          playlistVideos.map((v) => <SinglePlaylistVideoCard v={v} />)
-        ) : (
-          <SyncOutlined
-            spin
-            className="d-flex justify-content-center display-1 text-danger p-5 m-auto"
-          />
-        )}
+        <SinglePlaylistVideoCard
+          playlistVideos={playlistVideos}
+          setPlaylistVideos={setPlaylistVideos}
+          loading={loading}
+          updatePlaylist={updatePlaylist}
+          arrOfSelected={arrOfSelected}
+        />
       </div>
     </UserRoute>
   );
