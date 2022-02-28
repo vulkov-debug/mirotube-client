@@ -15,22 +15,22 @@ import { toast } from "react-toastify";
 
 const { SubMenu } = Menu;
 
-const LeftBar = () => {
+const LeftBar = ({ playlists, fetchPlaylists }) => {
   const [current, setCurrent] = useState([]);
 
   const [visible, setVisible] = useState(false);
   const [playlist, setPlaylist] = useState("");
 
-  const [playlists, setPlaylists] = useState([]);
   const [ok, setOk] = useState(true);
 
-  const [openKeys, setOpenKeys] = useState(["sub1"]);
+  
+
 
   const router = useRouter();
 
   useEffect(() => {
     process.browser && setCurrent(window.location.pathname);
-  }, [process.browser && window.location.pathname, openKeys]);
+  }, [process.browser && window.location.pathname]);
 
   const addPlaylist = async () => {
     setVisible(false);
@@ -42,41 +42,23 @@ const LeftBar = () => {
     fetchPlaylists();
   };
 
-  useEffect(() => {
-    fetchPlaylists();
-    // if (localStorage.getItem("keys")) {
-    //   const savedKeys = localStorage.getItem("keys");
-    //   setOpenKeys(savedKeys.split(','))
-    //   console.log('openKeys UseEffect', savedKeys.split(','))
+const  openKeysFunc = () => {
+    if(window && window.localStorage.getItem('keys')) {
+      return window.localStorage.getItem('keys').split(',')
+    } else {
+      return ['sub1'] 
+    } 
       
-    // }
-  }, []);
-
-  const fetchPlaylists = async () => {
-    const { data } = await axios.get("/api/get-playlists");
-    setPlaylists(data);
-    setOk(!ok);
-    console.log("playlists", playlists);
-  };
-
-  const handleOpenKeys = (key) => {
-    const newOpenKeys = openKeys;
-    if (newOpenKeys.indexOf(key) == -1) {
-      newOpenKeys.push(key);
     }
-    setOpenKeys(newOpenKeys);
-    console.log("openKeys", openKeys);
-    localStorage.setItem("keys", openKeys);
-    setOk(!ok)
-  };
-
+  
   return (
     <>
       <Menu
         selectedKeys={[current]}
-        defaultOpenKeys={openKeys}
+        defaultOpenKeys={openKeysFunc}
         mode="inline"
         theme="dark"
+        onOpenChange={(item)=> localStorage.setItem('keys', item)}
       >
         <Menu.Item
           key="/"
@@ -101,7 +83,8 @@ const LeftBar = () => {
             playlists.map((playlist) => (
               <Menu.Item
                 key={`/playlist/listen/${playlist._id}`}
-                onClick={() => router.push(`/playlist/listen/${playlist._id}`)}
+                onClick={() => {router.push(`/playlist/listen/${playlist._id}`)
+              }}
               >
                 {playlist.name}
               </Menu.Item>
@@ -110,8 +93,7 @@ const LeftBar = () => {
             <LoadingOutlined spin className="d-flex justify-content-center" />
           )}
         </SubMenu>
-       <SubMenu
-          onClick={(e) => setOpenKeys(e.key)}
+        <SubMenu
           key="sub2"
           icon={<UnorderedListOutlined />}
           title="Edit playlists"

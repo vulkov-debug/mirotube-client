@@ -1,42 +1,63 @@
 import React, { useState } from "react";
-import { Modal, Empty, Button } from "antd";
+import { Modal, Empty, Progress } from "antd";
 import ReactPlayer from "react-player";
 import axios from "axios";
 import { LoadingOutlined } from "@ant-design/icons";
-import {useRouter} from 'next/router' 
+import { useRouter } from "next/router";
+import { EditableTagGroup } from "../utilities/EditableTagGroup";
 
-const VideoUploadForm = ({visible, setVisible, setOk }) => {
+const VideoUploadForm = ({ visible, setVisible, setOk }) => {
   const [video, setVideo] = useState({});
-  const [title, setTitle] = useState ('')
-  const [description, setDescription] = useState('')
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleVideoUpload = async (e) => {
     e.preventDefault();
     const file = e.target.files[0];
+    setTitle(file.name.split('.')[0])
     const videoData = new FormData();
     videoData.append("video", file);
     setLoading(true);
-    const { data } = await axios.post("/api/video-upload", videoData);
+    const { data } = await axios.post("/api/video-upload", videoData, {
+      onUploadProgress: (e) => {
+        setProgress(Math.round((100 * e.loaded) / e.total));
+      },
+    });
     setVideo(data);
+
     setLoading(false);
   };
 
   const videoSave = async () => {
-    await axios.post('/api/video-save', {video, title, description})
-    setVisible(false)
-    setOk(prevState=> !prevState)
-    router.push('/my-videos')
+    await axios.post("/api/video-save", { video, title, description });
+    setVisible(false);
+    setTitle('')
+    setDescription('')
+    setVideo({})
+    setOk((prevState) => !prevState);
+    router.push("/my-videos");
   };
 
   return (
-    <Modal title="Upload new video" visible={visible} footer={null} onCancel={()=> setVisible(false)}>
+    <Modal
+      title="Upload new video"
+      visible={visible}
+      footer={null}
+      onCancel={() => setVisible(false)}
+    >
       <div className="wrapper">
-          <input className="form-control mb-3" placeholder="Enter video title" value={title} onChange={e=> setTitle(e.target.value)}/>
+        <input
+          className="form-control mb-3"
+          placeholder="Enter video title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
         {loading ? (
-          <LoadingOutlined className="display-2 d-flex justify-content-center text-secondary" />
+          <LoadingOutlined className="display-2 d-flex justify-content-center text-secondary m-5" />
         ) : video && video.Location ? (
           <div width={720} height={480}>
             <ReactPlayer
@@ -49,16 +70,29 @@ const VideoUploadForm = ({visible, setVisible, setOk }) => {
         ) : (
           <Empty />
         )}
+       {loading && <Progress
+        className="mt-5"
+          strokeColor={{
+            from: "#108ee9",
+            to: "#87d068",
+          }}
+          percent={progress}
+          status="active"
+        />}
         {video && video.Location && (
-          <textarea
-            name="description"
-            cols="7"
-            rows="4"
-            placeholder="Enter video description (optional)"
-            className="form-control"
-      value={description} onChange={e=> setDescription(e.target.value)}
-          />
+          <>
+            <textarea
+              name="description"
+              cols="7"
+              rows="4"
+              placeholder="Enter video description (optional)"
+              className="form-control"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </>
         )}
+        <EditableTagGroup/>
         {video && video.Location ? (
           <button
             onClick={videoSave}

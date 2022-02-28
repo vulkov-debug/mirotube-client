@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 
 const { Meta } = Card;
 
-const SingleEditVideoCard = ({ v, handleVideoRemove }) => {
+const SingleEditVideoCard = ({ v, handleVideoRemove, handleVideoEdit }) => {
   const router = useRouter();
   return (
     <Card
@@ -26,7 +26,7 @@ const SingleEditVideoCard = ({ v, handleVideoRemove }) => {
       }
       actions={[
         <Tooltip title="Edit video">
-          <EditOutlined className="text-warning" />
+          <EditOutlined className="text-warning" onClick={()=> handleVideoEdit(v)}/>
         </Tooltip>,
         <Tooltip title="Remove video">
           <CloseCircleOutlined

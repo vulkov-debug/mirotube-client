@@ -6,6 +6,7 @@ import UserRoute from "../../components/routes/UserRoute";
 import SingleVideoCard from "../../components/cards/SingleVideoCard";
 import { Card } from "antd";
 const { Meta } = Card;
+import Head from 'next/head'
 
 import { Context } from "../../context";
 
@@ -72,6 +73,11 @@ const SingleVideoView = () => {
   };
 
   return (
+    <>
+    <Head>
+      <title>{video.title}</title>
+      <link rel='icon' href='/favicon.png'/>
+    </Head>
     <UserRoute>
       <div className="row">
         <div className="col-md-9">
@@ -136,6 +142,7 @@ const SingleVideoView = () => {
         </div>
       </div>
     </UserRoute>
+    </>
   );
 };
 

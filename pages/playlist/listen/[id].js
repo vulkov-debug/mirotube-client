@@ -18,7 +18,7 @@ const [loading, setLoading] = useState(false)
     const [playlistVideos, setPlaylistVideos] = useState([])
 
     useEffect(()=> {
-    fetchPlaylistVideos()
+    if(id) fetchPlaylistVideos()
     },[id])
 
     const fetchPlaylistVideos = async () => {

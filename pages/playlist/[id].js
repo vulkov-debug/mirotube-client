@@ -6,6 +6,7 @@ import { PlusCircleOutlined } from "@ant-design/icons";
 import AddVideoToPlaylist from "../../components/forms/AddVideoToPlaylist";
 import SinglePlaylistVideoCard from "../../components/cards/SinglePlaylistVideoCard";
 import { toast } from "react-toastify";
+import Head from 'next/head'
 
 const userPlaylist = () => {
   const router = useRouter();
@@ -104,7 +105,10 @@ const userPlaylist = () => {
    setVideosInModal(arrOfModalVideos)
       }
 
-  return (
+  return (<>
+  <Head>
+    <title>Edit Playlist</title>
+  </Head>
     <UserRoute>
       <div className="container-fluid p-2">
         <div className="d-flex justify-content-center">
@@ -139,6 +143,7 @@ const userPlaylist = () => {
         />
       </div>
     </UserRoute>
+  </>
   );
 };
 
