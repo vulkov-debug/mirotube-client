@@ -5,6 +5,7 @@ import axios from "axios";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { EditableTagGroup } from "../utilities/EditableTagGroup";
+import TagSuggest from "../utilities/TagSuggest";
 
 const VideoUploadForm = ({ visible, setVisible, setOk }) => {
   const [video, setVideo] = useState({});
@@ -13,14 +14,22 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  const [tags, setTags] = useState([]);
+  const [tagsSuggestions, setTagSuggestions] = useState([])
+
   const router = useRouter();
 
   const handleVideoUpload = async (e) => {
     e.preventDefault();
     const file = e.target.files[0];
-    setTitle(file.name.split('.')[0])
+    setTitle(file.name.split(".")[0]);
     const videoData = new FormData();
     videoData.append("video", file);
+
+    const suggesions = file.name.split(' ').filter(sug=> sug.length > 4)
+    console.log('suggestions', suggesions)
+    setTagSuggestions(suggesions)
+    
     setLoading(true);
     const { data } = await axios.post("/api/video-upload", videoData, {
       onUploadProgress: (e) => {
@@ -29,15 +38,16 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
     });
     setVideo(data);
 
+
     setLoading(false);
   };
 
   const videoSave = async () => {
-    await axios.post("/api/video-save", { video, title, description });
+    await axios.post("/api/video-save", { video, title, description, tags });
     setVisible(false);
-    setTitle('')
-    setDescription('')
-    setVideo({})
+    setTitle("");
+    setDescription("");
+    setVideo({});
     setOk((prevState) => !prevState);
     router.push("/my-videos");
   };
@@ -70,15 +80,20 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
         ) : (
           <Empty />
         )}
-       {loading && <Progress
-        className="mt-5"
-          strokeColor={{
-            from: "#108ee9",
-            to: "#87d068",
-          }}
-          percent={progress}
-          status="active"
-        />}
+        {loading && (
+          <Progress
+            className="mt-5"
+            strokeColor={{
+              from: "#108ee9",
+              to: "#87d068",
+            }}
+            percent={progress}
+            status="active"
+            />
+            )}
+            <TagSuggest tags={tags} setTags={setTags} tagsSuggestions={tagsSuggestions}/>
+            <EditableTagGroup tags={tags} setTags={setTags} className='p-2'/>
+            
         {video && video.Location && (
           <>
             <textarea
@@ -86,17 +101,16 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
               cols="7"
               rows="4"
               placeholder="Enter video description (optional)"
-              className="form-control"
+              className="form-control mt-2"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
           </>
         )}
-        <EditableTagGroup/>
         {video && video.Location ? (
           <button
-            onClick={videoSave}
-            className="btn btn-block btn-primary mt-3"
+          onClick={videoSave}
+          className="btn btn-block btn-primary mt-3"
           >
             Save
           </button>

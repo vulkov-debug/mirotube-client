@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from "react";
 import dynamic from 'next/dynamic'
 const LeftBar = dynamic(()=> import("../../components/LeftBar"), {ssr: false} )  ;
-// import LeftBar from "../LeftBar";
+
 import axios from "axios";
 
 const UserRoute = ({ children }) => {
@@ -12,7 +12,6 @@ const UserRoute = ({ children }) => {
   const fetchPlaylists = async () => {
     const { data } = await axios.get("/api/get-playlists");
     setPlaylists(data);
-    console.log("playlists", playlists);
     setOk(!ok)
   };
   useEffect(() => {
@@ -23,8 +22,8 @@ const UserRoute = ({ children }) => {
   
   
   return (
-    <div className="container-fluid row p-0">
-      <div className="col-md-2">
+    <div className="container-fluid row  p-0">
+      <div className="col-md-2 p-0">
       <LeftBar playlists={playlists} fetchPlaylists={fetchPlaylists}/>
     
       </div>

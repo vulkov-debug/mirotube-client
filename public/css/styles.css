@@ -6,3 +6,28 @@
     background-image: linear-gradient(to right, #ff0000, #000);
     color: #fff
 }
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.site-tag-plus {
+    background: #fff;
+    border-style: dashed;
+    font-size: 0.8em;
+    vertical-align: center;
+    height: fit-content;
+
+}
+  .edit-tag {
+    user-select: none;
+    font-size: 0.8em;
+    height: fit-content;
+  }
+  .tag-input {
+    width: 85px;
+    margin-right: 8px;
+    vertical-align: center;
+    font-size: 0.8em;
+    height: fit-content;
+  }

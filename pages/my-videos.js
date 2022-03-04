@@ -13,12 +13,16 @@ import { toast } from "react-toastify";
 import SingleEditVideoCard from "../components/cards/SingleEditVideoCard";
 import VideoUploadForm from "../components/forms/VideoUploadForm";
 import ReactPlayer from "react-player";
+import { EditableTagGroup } from "../components/utilities/EditableTagGroup";
+import Head from 'next/head'
 
 const { confirm } = Modal;
 
 const myVideos = () => {
   const [videos, setVideos] = useState([]);
   const [ok, setOk] = useState(false);
+
+  const [tags, setTags] = useState([])
 
 
   const [visible, setVisible] = useState(false);
@@ -65,6 +69,7 @@ const myVideos = () => {
     try {
       setEditVisible(true);
       setVideoEditState(v);
+      setTags(v.tags)
     } catch (error) {
       toast.error(error);
     }
@@ -93,12 +98,17 @@ const myVideos = () => {
 
   const handleVideoSubmit = async() => {
     const {_id, title, description, video} = videoEditState
-    const {data} =await axios.post(`/api/video-edit-submit/${_id}`, {title, description, video})
+    const {data} =await axios.post(`/api/video-edit-submit/${_id}`, {title, description, video, tags})
     if(data.ok) toast.success(`Successfully updated ${title}`)
     setEditVisible(false)
     setOk(prevState=> !prevState)
   };
   return (
+    <>
+     <Head>
+        <title>My videos</title>
+        <link rel="icon" href="/favicon.png" />
+      </Head>
     <UserRoute>
       <Modal
         visible={editVisible}
@@ -129,8 +139,11 @@ const myVideos = () => {
           ) : (
             <Empty />
           )}
+          <hr />
+          <EditableTagGroup tags={tags} setTags={setTags} />
+          <hr />
           {loading && <Progress
-        className="mb-3"
+        className="m-3"
           strokeColor={{
             from: "#108ee9",
             to: "#87d068",
@@ -203,6 +216,7 @@ const myVideos = () => {
         ))}
       </div>
     </UserRoute>
+    </>
   );
 };
 

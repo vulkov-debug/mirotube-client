@@ -19,7 +19,7 @@ const SingleVideoCard = ({v}) => {
             alt="video"
             width="100%"
             height="100%"
-            // cover
+            
           />
         </>
       }

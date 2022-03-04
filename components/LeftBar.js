@@ -4,27 +4,24 @@ import {
   AppstoreOutlined,
   PlusOutlined,
   UnorderedListOutlined,
-  UploadOutlined,
   PlayCircleOutlined,
   HomeOutlined,
   LoadingOutlined,
+  DeleteOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { toast } from "react-toastify";
 
 const { SubMenu } = Menu;
+const { confirm } = Modal;
 
 const LeftBar = ({ playlists, fetchPlaylists }) => {
   const [current, setCurrent] = useState([]);
 
   const [visible, setVisible] = useState(false);
   const [playlist, setPlaylist] = useState("");
-
-  const [ok, setOk] = useState(true);
-
-  
-
 
   const router = useRouter();
 
@@ -41,16 +38,30 @@ const LeftBar = ({ playlists, fetchPlaylists }) => {
     setPlaylist("");
     fetchPlaylists();
   };
-
-const  openKeysFunc = () => {
-    if(window && window.localStorage.getItem('keys')) {
-      return window.localStorage.getItem('keys').split(',')
-    } else {
-      return ['sub1'] 
-    } 
-      
-    }
   
+  const openKeysFunc = () => {
+    if (window && window.localStorage.getItem("keys")) {
+      return window.localStorage.getItem("keys").split(",");
+    } else {
+      return ["sub1"];
+    }
+  };
+  
+  const removePlaylist = async (id, name) => {
+    confirm({
+      title: "Do you want to delete this item?",
+      icon: <ExclamationCircleOutlined />,
+      content: `${name}`,
+      async onOk() {
+        const { data } = await axios.post("/api/delete-playlist", { id });
+        if (data.ok) toast.success(`Playlist ${name} removed`);
+        fetchPlaylists();
+        router.push('/my-videos')
+      },
+      onCancel() {},
+    });
+  };
+
   return (
     <>
       <Menu
@@ -58,7 +69,7 @@ const  openKeysFunc = () => {
         defaultOpenKeys={openKeysFunc}
         mode="inline"
         theme="dark"
-        onOpenChange={(item)=> localStorage.setItem('keys', item)}
+        onOpenChange={(item) => localStorage.setItem("keys", item)}
       >
         <Menu.Item
           key="/"
@@ -79,19 +90,18 @@ const  openKeysFunc = () => {
           >
             My videos
           </Menu.Item>
-          {playlists.length > 0 ? (
+          {playlists.length > 0 && (
             playlists.map((playlist) => (
               <Menu.Item
                 key={`/playlist/listen/${playlist._id}`}
-                onClick={() => {router.push(`/playlist/listen/${playlist._id}`)
-              }}
+                onClick={() => {
+                  router.push(`/playlist/listen/${playlist._id}`);
+                }}
               >
                 {playlist.name}
               </Menu.Item>
             ))
-          ) : (
-            <LoadingOutlined spin className="d-flex justify-content-center" />
-          )}
+          ) }
         </SubMenu>
         <SubMenu
           key="sub2"
@@ -105,18 +115,21 @@ const  openKeysFunc = () => {
           >
             Add new Playlist
           </Menu.Item>
-          {playlists.length > 0 ? (
+          {playlists.length > 0 && (
             playlists.map((playlist) => (
               <Menu.Item
                 key={`/playlist/${playlist._id}`}
                 onClick={() => router.push(`/playlist/${playlist._id}`)}
               >
-                {playlist.name}
+                {playlist.name}{" "}
+                <DeleteOutlined
+                  className="float-right pt-2 text-danger"
+                  onClick={() => removePlaylist(playlist._id, playlist.name)}
+                />
               </Menu.Item>
             ))
-          ) : (
-            <LoadingOutlined spin className="d-flex justify-content-center" />
-          )}
+          )
+          }
         </SubMenu>
         <SubMenu key="sub5" icon={<AppstoreOutlined />} title="Navigation Two">
           <Menu.Item key="8">Option 9</Menu.Item>

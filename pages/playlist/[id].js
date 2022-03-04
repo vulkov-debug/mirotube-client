@@ -71,7 +71,6 @@ const userPlaylist = () => {
     const { data } = await axios.post("/api/get-playlist-videos", {
       playlist: id,
     });
-    console.log("playlist videos", data);
     setPlaylistVideos(data);
   };
 
@@ -108,6 +107,7 @@ const userPlaylist = () => {
   return (<>
   <Head>
     <title>Edit Playlist</title>
+    <link rel="icon" href="/favicon.png" />
   </Head>
     <UserRoute>
       <div className="container-fluid p-2">

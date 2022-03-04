@@ -12,6 +12,7 @@ const SingleEditVideoCard = ({ v, handleVideoRemove, handleVideoEdit }) => {
     <Card
       className="col-md-2 col-sm-5 m-3 p-0"
       hoverable
+      
       cover={
         <>
           <ReactPlayer
@@ -37,6 +38,7 @@ const SingleEditVideoCard = ({ v, handleVideoRemove, handleVideoEdit }) => {
       ]}
     >
       <Meta
+            onClick={() => router.push(`/view/${v._id}`)}
         title={v.title}
         description={v.description ? v.description : v.title}
       />

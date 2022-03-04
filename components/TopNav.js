@@ -4,7 +4,7 @@ import Link from "next/link";
 import { Context } from "../context";
 import { toast } from "react-toastify";
 import axios from "axios";
-import Typewriter from 'typewriter-effect';
+import {PlayCircleOutlined} from '@ant-design/icons'
 
 
 const { Item } = Menu;
@@ -49,8 +49,8 @@ const TopNav = () => {
     <div className="container-fluid p-0">
 
     <Menu mode="horizontal inline" theme="dark" className="d-flex">
-      <div className="ml-2 mr-2" >
-    MiroTube
+      <div className="ml-4 mr-3 text-danger h3 mt-1" >
+      <PlayCircleOutlined />
       </div>
       <Item className="mr-2">
         <Link href="/popular">
