@@ -6,6 +6,7 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
 import { EditableTagGroup } from "../utilities/EditableTagGroup";
 import TagSuggest from "../utilities/TagSuggest";
+import { toast } from "react-toastify";
 
 const VideoUploadForm = ({ visible, setVisible, setOk }) => {
   const [video, setVideo] = useState({});
@@ -15,7 +16,7 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
   const [progress, setProgress] = useState(0);
 
   const [tags, setTags] = useState([]);
-  const [tagsSuggestions, setTagSuggestions] = useState([])
+  const [tagsSuggestions, setTagSuggestions] = useState([]);
 
   const router = useRouter();
 
@@ -26,10 +27,10 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
     const videoData = new FormData();
     videoData.append("video", file);
 
-    const suggesions = file.name.split(' ').filter(sug=> sug.length > 4)
-    console.log('suggestions', suggesions)
-    setTagSuggestions(suggesions)
-    
+    const suggesions = file.name.split(" ").filter((sug) => sug.length > 4);
+    console.log("suggestions", suggesions);
+    setTagSuggestions(suggesions);
+
     setLoading(true);
     const { data } = await axios.post("/api/video-upload", videoData, {
       onUploadProgress: (e) => {
@@ -37,7 +38,6 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
       },
     });
     setVideo(data);
-
 
     setLoading(false);
   };
@@ -50,6 +50,7 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
     setVideo({});
     setOk((prevState) => !prevState);
     router.push("/my-videos");
+    toast.success('Successfully added!')
   };
 
   return (
@@ -89,11 +90,15 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
             }}
             percent={progress}
             status="active"
-            />
-            )}
-            <TagSuggest tags={tags} setTags={setTags} tagsSuggestions={tagsSuggestions}/>
-            <EditableTagGroup tags={tags} setTags={setTags} className='p-2'/>
-            
+          />
+        )}
+        <TagSuggest
+          tags={tags}
+          setTags={setTags}
+          tagsSuggestions={tagsSuggestions}
+        />
+        <EditableTagGroup tags={tags} setTags={setTags} className="p-2" />
+
         {video && video.Location && (
           <>
             <textarea
@@ -109,22 +114,23 @@ const VideoUploadForm = ({ visible, setVisible, setOk }) => {
         )}
         {video && video.Location ? (
           <button
-          onClick={videoSave}
-          className="btn btn-block btn-primary mt-3"
+            onClick={videoSave}
+            className="btn btn-block btn-primary mt-3"
+            disabled={loading}
           >
             Save
           </button>
         ) : (
-          <label className="btn btn-primary btn-block mt-5">
-            Upload
-            <input
-              type="file"
-              accept="video/*"
-              hidden
-              onChange={handleVideoUpload}
-              disabled={loading}
-            />
-          </label>
+            <label className="btn btn-primary btn-block mt-5">
+              {loading ? 'Uploading' : 'Upload'}
+              <input
+                type="file"
+                accept="video/*"
+                hidden
+                onChange={handleVideoUpload}
+                disabled={loading}
+              />
+            </label>
         )}
       </div>
     </Modal>

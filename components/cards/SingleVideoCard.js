@@ -3,8 +3,6 @@ import { Card } from "antd";
 import ReactPlayer from 'react-player/lazy'
 const { Meta } = Card;
 import { useRouter } from "next/router";
-import { LoadingOutlined } from '@ant-design/icons';
-
 const SingleVideoCard = ({v}) => {
     const router = useRouter();
   return (
@@ -19,7 +17,6 @@ const SingleVideoCard = ({v}) => {
             alt="video"
             width="100%"
             height="100%"
-            
           />
         </>
       }

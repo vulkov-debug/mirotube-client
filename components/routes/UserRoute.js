@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, {useState, useEffect, useMemo, useCallback} from "react";
 import dynamic from 'next/dynamic'
 const LeftBar = dynamic(()=> import("../../components/LeftBar"), {ssr: false} )  ;
 
@@ -18,14 +18,15 @@ const UserRoute = ({ children }) => {
     fetchPlaylists();
   },[]);
 
-  
+  const LeftBarFunc = useMemo(() => (
+  <LeftBar playlists={playlists} fetchPlaylists={fetchPlaylists} ok={ok}/>
+  ),[ok])
   
   
   return (
     <div className="container-fluid row  p-0">
       <div className="col-md-2 p-0">
-      <LeftBar playlists={playlists} fetchPlaylists={fetchPlaylists}/>
-    
+    {LeftBarFunc}
       </div>
       <div className="col-md-10">{children}</div>
     </div>

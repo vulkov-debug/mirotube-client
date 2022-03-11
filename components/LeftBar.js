@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { Menu, Modal } from "antd";
 import {
   AppstoreOutlined,
@@ -6,7 +6,6 @@ import {
   UnorderedListOutlined,
   PlayCircleOutlined,
   HomeOutlined,
-  LoadingOutlined,
   DeleteOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
@@ -61,6 +60,8 @@ const LeftBar = ({ playlists, fetchPlaylists }) => {
       onCancel() {},
     });
   };
+
+    
 
   return (
     <>
@@ -131,7 +132,7 @@ const LeftBar = ({ playlists, fetchPlaylists }) => {
           )
           }
         </SubMenu>
-        <SubMenu key="sub5" icon={<AppstoreOutlined />} title="Navigation Two">
+        <SubMenu key="sub5" icon={<AppstoreOutlined />} title="Auto generated playlists">
           <Menu.Item key="8">Option 9</Menu.Item>
           <Menu.Item key="9">Option 10</Menu.Item>
           <SubMenu key="sub3" title="Submenu">

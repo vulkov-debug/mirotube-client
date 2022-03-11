@@ -3,12 +3,13 @@ import { useRouter } from "next/router";
 import ReactPlayer from "react-player";
 import axios from "axios";
 import UserRoute from "../../components/routes/UserRoute";
-import SingleVideoCard from "../../components/cards/SingleVideoCard";
-import { Card, Tag } from "antd";
+import { Card, Switch, Tag } from "antd";
 const { Meta } = Card;
 import Head from "next/head";
+import Player from '../../components/player'
 
 import { Context } from "../../context";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const SingleVideoView = () => {
   const {
@@ -17,8 +18,15 @@ const SingleVideoView = () => {
   } = useContext(Context);
 
   const [video, setVideo] = useState({});
+  const {title} = video
 
   const [playingIndex, setPlayingIndex] = useState(0);
+
+  const [loop, setLoop] = useState(false);
+  const [autoPlay, setAutoPlay] = useState(true)
+
+
+ 
 
   const router = useRouter();
 
@@ -54,7 +62,7 @@ const SingleVideoView = () => {
   }, [id, video]);
 
   const nextSong = async () => {
-  const {data} = await axios.post(`/api/increment-views-count`, {id})
+    const { data } = await axios.post(`/api/increment-views-count`, { id });
     if (playlist && playlist[playingIndex + 1]) {
       router.push(`/view/${playlist[playingIndex + 1]._id}`);
     }
@@ -75,8 +83,8 @@ const SingleVideoView = () => {
 
   const tagVideoHandler = async (tag) => {
     const { data } = await axios.post("/api/get-videos-by-tag", [tag]);
-        dispatch({ type: "SET-PLAYLIST", payload: data });
-  }
+    dispatch({ type: "SET-PLAYLIST", payload: data });
+  };
 
   return (
     <>
@@ -86,21 +94,29 @@ const SingleVideoView = () => {
       </Head>
       <UserRoute>
         <div className="container-fluid row">
-          <div className="col-md-9" style={{marginLeft: '-30px', marginRight: '30px'}}>
-            {video && video.video && (
+          <div
+            className="col-md-9"
+            style={{ marginLeft: "-30px", marginRight: "30px" }}
+          >
+            {video && video.video ? (
               <Card>
-                <ReactPlayer
+                <Player
                   url={urlVideo()}
-                  controls
-                  style={{ top: 0, left: 0 }}
-                  width="100%"
-                  height="auto"
-                  playing
+                  title={title}
                   onEnded={nextSong}
+                  loop={loop}
                 />
                 <div className="container mt-2">
                   {video.tags &&
-                    video.tags.map((tag) => <Tag color="#108ee9" className="cursor-pointer" onClick={()=>tagVideoHandler(tag)}>{tag}</Tag>)}
+                    video.tags.map((tag) => (
+                      <Tag
+                        color="#108ee9"
+                        className="cursor-pointer"
+                        onClick={() => tagVideoHandler(tag)}
+                      >
+                        {tag}
+                      </Tag>
+                    ))}
                 </div>
                 <hr />
                 <Meta
@@ -108,13 +124,31 @@ const SingleVideoView = () => {
                     <>
                       <div className="h4">
                         <strong>{video.title}</strong>
+                        <Switch
+                          className="float-right ml-4"
+                          checked={autoPlay}
+                          onChange={(v)=> {setAutoPlay(v); dispatch({ type: "REMOVE-PLAYLIST" });}}
+                          checkedChildren="AutoPlay"
+                          unCheckedChildren="AutoPlay"
+                        />
+                        <Switch
+                          className="float-right"
+                          checked={loop}
+                          onChange={(v)=> setLoop(v)}
+                          checkedChildren="Loop"
+                          unCheckedChildren="Loop"
+                        />
+                      </div>
+                      <div>
+                        <span>by {video.author.name}</span>
                       </div>
                       <div>{video.description}</div>
+                      <h6 className="float-right">{video.viewCount} views</h6>
                     </>
                   }
                 />
               </Card>
-            )}
+            ) : <LoadingOutlined spin/>}
           </div>
           <div className="col-md-3 p-3 ">
             {playlist &&

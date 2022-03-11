@@ -30,7 +30,7 @@ const userPlaylist = () => {
   const arrOfSelected = [];
 
   const fetchUserVideos = async () => {
-    const { data } = await axios.get("/api/user-videos");
+    const { data } = await axios.get("/api/user-videos/0");
     setUserVideos(data);
     console.log("videos", data);
     if (data.length > 0) {

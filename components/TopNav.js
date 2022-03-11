@@ -1,4 +1,4 @@
-import React, {useContext}  from "react";
+import React, {useContext, useState, useEffect}  from "react";
 import { Menu, Input, AutoComplete, Dropdown, Button } from "antd";
 import Link from "next/link";
 import { Context } from "../context";
@@ -11,7 +11,13 @@ const { Item } = Menu;
 
 const TopNav = () => {
 
+  const [current, setCurrent] = useState([]);
+
   const {state: {user}, dispatch} = useContext(Context)
+
+  useEffect(() => {
+    process.browser && setCurrent(window.location.pathname);
+  }, [process.browser && window.location.pathname]);
 
   const logout = async () => {
     try {
@@ -26,15 +32,15 @@ const TopNav = () => {
 
 
     const menu = (
-        <Menu>
+        <Menu >
           {!user ? <><Menu.Item key='login'>
            <Link href='/login'><a className="d-flex justify-content-center"><b>Login</b></a></Link>
           </Menu.Item>
-          <Menu.Item key='register'>
+          <Menu.Item key='/register'>
            <Link href='/register'><a className="d-flex justify-content-center"><b>Register</b></a></Link>
           </Menu.Item></> : 
           <>
-          <Menu.Item key='details'>
+          <Menu.Item key='/details'>
           <Link href='/user-details'><a className="d-flex justify-content-center"><b>User details</b></a></Link>
          </Menu.Item>
          <Menu.Item key='logout'>
@@ -48,21 +54,25 @@ const TopNav = () => {
   return (
     <div className="container-fluid p-0">
 
-    <Menu mode="horizontal inline" theme="dark" className="d-flex">
+    <Menu mode="horizontal inline" theme="dark" className="d-flex" selectedKeys={[current]}>
       <div className="ml-4 mr-3 text-danger h3 mt-1" >
       <PlayCircleOutlined />
       </div>
-      <Item className="mr-2">
+      <Item className="mr-2" key='/popular'>
         <Link href="/popular">
           <a> Popular</a>
         </Link>
       </Item>
-      <Item className="mr-2">
+      <Item className="mr-2" key='/newest'>
         <Link href="/newest">
           <a>Newest</a>
         </Link>
       </Item>
-
+      <Item className="mr-2" key='/highest-rated'>
+        <Link href="/highest-rated">
+          <a>Highest rated</a>
+        </Link>
+      </Item>
       {user && <AutoComplete style={{ width: 600 }} className=" m-auto">
         <Input.Search size="medium" placeholder="Search here" />
       </AutoComplete>
