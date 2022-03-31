@@ -3,6 +3,7 @@ import { Card, Tooltip } from "antd";
 import ReactPlayer from "react-player";
 import { EditOutlined, CloseCircleOutlined } from "@ant-design/icons";
 import { useRouter } from "next/router";
+import VideoThumbnailUtility from "../utilities/VideoThumbnailUtility";
 
 const { Meta } = Card;
 
@@ -12,22 +13,20 @@ const SingleEditVideoCard = ({ v, handleVideoRemove, handleVideoEdit }) => {
     <Card
       className="col-md-2 col-sm-5 m-3 p-0"
       hoverable
-      
       cover={
-        <>
-          <ReactPlayer
-            onClick={() => router.push(`/view/${v._id}`)}
-            url={v && v.video.Location ? v.video.Location : "/course.png"}
-            alt="video"
-            width="100%"
-            height="100%"
-            cover
-          />
-        </>
+        <div
+          style={{ height: "120px" }}
+          onClick={() => router.push(`/view/${v._id}`)}
+        >
+          <VideoThumbnailUtility v={v} />
+        </div>
       }
       actions={[
         <Tooltip title="Edit video">
-          <EditOutlined className="text-warning" onClick={()=> handleVideoEdit(v)}/>
+          <EditOutlined
+            className="text-warning"
+            onClick={() => handleVideoEdit(v)}
+          />
         </Tooltip>,
         <Tooltip title="Remove video">
           <CloseCircleOutlined
@@ -38,7 +37,7 @@ const SingleEditVideoCard = ({ v, handleVideoRemove, handleVideoEdit }) => {
       ]}
     >
       <Meta
-            onClick={() => router.push(`/view/${v._id}`)}
+        onClick={() => router.push(`/view/${v._id}`)}
         title={v.title}
         description={v.description ? v.description : v.title}
       />

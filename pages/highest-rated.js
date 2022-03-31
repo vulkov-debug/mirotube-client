@@ -6,7 +6,7 @@ import SingleVideoCard from "../components/cards/SingleVideoCard";
 import Head from "next/head";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const newest = () => {
+const highestRated = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +17,7 @@ const newest = () => {
   useEffect(() => {
     const fetchVideos = async () => {
       setLoading(true);
-      const { data: {videos, count} } = await axios.get(`/api/newest/${skip}`);
+      const { data: {videos, count} } = await axios.get(`/api/highest-rated/${skip}`);
       setVideos(videos);
       setVideoCount(count)
       setLoading(false);
@@ -26,7 +26,7 @@ const newest = () => {
   }, []);
 
   const loadMore = useCallback(async (s) => {
-    const { data: {videos} } = await axios.get(`/api/newest/${skip}`);
+    const { data: {videos} } = await axios.get(`/api/highest-rated/${skip}`);
      setVideos(p=> [...p, ...videos])
   },[videos])
 
@@ -65,4 +65,4 @@ const newest = () => {
   );
 };
 
-export default newest;
+export default highestRated;

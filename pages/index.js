@@ -39,6 +39,7 @@ const index = () => {
     setVideos((prevVideos) => [...prevVideos, ...all]);
   },[videos])
 
+
   return (
     <>
       <Head>
@@ -47,6 +48,8 @@ const index = () => {
       </Head>
       <UserRoute>
         <InfiniteScroll
+                style={{overflow: 'hidden'}}
+
           dataLength={27}
           next={() => {
             loadMore(skip+ 20);
@@ -59,19 +62,19 @@ const index = () => {
             </div>
           }
         >
-          <div className="row">
-            {!loading ? (
+          <div className="row" style={{'height': loading && '100%'}}>
+            {!loading && (
               videos.map((v) => (
                 <SingleVideoCard v={v} key={v._id} />
               ))
-            ) : (
-              <SyncOutlined
-                spin
-                className="d-flex justify-content-center display-1 text-danger p-5 m-auto"
-              />
             )}
           </div>
         </InfiniteScroll>
+       {loading && <SyncOutlined 
+                spin
+                className="col-md-3 offset-md-4 display-1 text-danger p-5"
+                style={{overflow: 'hidden'}}
+              />}
       </UserRoute>
     </>
   );

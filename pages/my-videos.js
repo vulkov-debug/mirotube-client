@@ -49,12 +49,15 @@ const myVideos = () => {
     myVideos();
   }, [ok]);
 
-  const loadMore = useCallback(async (s) => {
-    const {
-      data: { videos },
-    } = await axios.get(`/api/user-videos/${s}`);
-    setVideos(p=> [...p, ...videos]);
-  }, [videos]);
+  const loadMore = useCallback(
+    async (s) => {
+      const {
+        data: { videos },
+      } = await axios.get(`/api/user-videos/${s}`);
+      setVideos((p) => [...p, ...videos]);
+    },
+    [videos]
+  );
 
   const handleVideoRemove = async (videoData) => {
     try {
@@ -228,8 +231,9 @@ const myVideos = () => {
           />
         </div>
         <InfiniteScroll
+          style={{ overflow: "hidden" }}
           dataLength={userVideosCount}
-          hasMore={userVideosCount > skip+20}
+          hasMore={userVideosCount > skip + 20}
           next={() => {
             loadMore(skip + 20);
             setSkip((p) => p + 20);

@@ -3,10 +3,10 @@ import { useRouter } from "next/router";
 import ReactPlayer from "react-player";
 import axios from "axios";
 import UserRoute from "../../components/routes/UserRoute";
-import { Card, Switch, Tag } from "antd";
+import { Card, Switch, Tag, Rate } from "antd";
 const { Meta } = Card;
 import Head from "next/head";
-import Player from '../../components/player'
+import Player from "../../components/player";
 
 import { Context } from "../../context";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -18,29 +18,46 @@ const SingleVideoView = () => {
   } = useContext(Context);
 
   const [video, setVideo] = useState({});
-  const {title} = video
+  const { title } = video;
 
   const [playingIndex, setPlayingIndex] = useState(0);
 
   const [loop, setLoop] = useState(false);
-  const [autoPlay, setAutoPlay] = useState(true)
+  const [autoPlay, setAutoPlay] = useState(true);
 
+  const desc = ["terrible", "bad", "normal", "good", "wonderful"];
 
- 
+  const [value, setValue] = useState();
 
   const router = useRouter();
 
   const { id } = router.query;
 
   useEffect(() => {
-    const fetchVideo = async () => {
-      if (id) {
-        const { data } = await axios.get(`/api/single-video/${id}`);
-        setVideo(data);
-      }
-    };
     fetchVideo();
   }, [id]);
+
+  useEffect(() => {
+    if(video && video.voted) {rateCalc()}
+  }, [video]);
+
+  useEffect(()=> {
+    axios.post('/api/rate-save', {rate: value, videoId: video._id})
+  },[value])
+
+  const rateCalc = () => {
+    const votedUsers = video.voted.length
+    const voteSum = 0
+    video.voted.map(v=> voteSum += v.rate)
+    setValue(voteSum/votedUsers)
+  };
+
+  const fetchVideo = async () => {
+    if (id) {
+      const { data } = await axios.get(`/api/single-video/${id}`);
+      setVideo(data);
+    }
+  };
 
   useEffect(() => {
     const currentIndex = "";
@@ -86,6 +103,12 @@ const SingleVideoView = () => {
     dispatch({ type: "SET-PLAYLIST", payload: data });
   };
 
+  const handleRate = async (v) => {
+    setValue(v);
+    const { data } = await axios.post("/api/rate-video", { videoId: video._id, rate: v });
+    
+  };
+
   return (
     <>
       <Head>
@@ -106,7 +129,7 @@ const SingleVideoView = () => {
                   onEnded={nextSong}
                   loop={loop}
                 />
-                <div className="container mt-2">
+                <div className="container m-3">
                   {video.tags &&
                     video.tags.map((tag) => (
                       <Tag
@@ -117,8 +140,22 @@ const SingleVideoView = () => {
                         {tag}
                       </Tag>
                     ))}
+                  <span className="float-right">
+                    <Rate
+                    allowHalf
+                      tooltips={desc}
+                      onChange={(v) => handleRate(v)}
+                      value={value}
+                    />
+                    {value ? (
+                      <span className="ant-rate-text">{desc[value - 1]}</span>
+                    ) : (
+                      ""
+                    )}
+                  </span>
                 </div>
                 <hr />
+                <br />
                 <Meta
                   description={
                     <>
@@ -127,14 +164,17 @@ const SingleVideoView = () => {
                         <Switch
                           className="float-right ml-4"
                           checked={autoPlay}
-                          onChange={(v)=> {setAutoPlay(v); dispatch({ type: "REMOVE-PLAYLIST" });}}
+                          onChange={(v) => {
+                            setAutoPlay(v);
+                            dispatch({ type: "REMOVE-PLAYLIST" });
+                          }}
                           checkedChildren="AutoPlay"
                           unCheckedChildren="AutoPlay"
                         />
                         <Switch
                           className="float-right"
                           checked={loop}
-                          onChange={(v)=> setLoop(v)}
+                          onChange={(v) => setLoop(v)}
                           checkedChildren="Loop"
                           unCheckedChildren="Loop"
                         />
@@ -147,8 +187,14 @@ const SingleVideoView = () => {
                     </>
                   }
                 />
+                <strong>
+                  Upload date:{" "}
+                  {new Date(video.createdAt).toString().split("GMT")[0]}
+                </strong>
               </Card>
-            ) : <LoadingOutlined spin/>}
+            ) : (
+              <LoadingOutlined spin />
+            )}
           </div>
           <div className="col-md-3 p-3 ">
             {playlist &&

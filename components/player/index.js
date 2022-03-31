@@ -123,6 +123,10 @@ const Player = ({ url, title, onEnded, loop }) => {
     setOk(!ok);
   }, [ready]);
 
+  useEffect(()=> {
+    setBookmarks([])
+  },[url])
+
   const playerRef = useRef(null);
   const controlsRef = useRef(null);
   const canvasRef = useRef(null);
@@ -304,7 +308,7 @@ const Player = ({ url, title, onEnded, loop }) => {
             config={{
               file: {
                 attributes: {
-                  crossorigin:'anonymous'
+                  crossOrigin:'anonymous'
                 },
               },
             }}
